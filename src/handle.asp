@@ -66,7 +66,7 @@ If Len(src) > 0 Then
     centerLetter = GetValueBetween(src, """centerLetter"":""", """")
     outerLetters = GetValueBetween(src, """outerLetters"":[", "]")
     answers = GetValueBetween(src, """answers"":[", "]")
-    panagrams = GetValueBetween(src, """panagrams"":[", "]")
+    panagrams = GetValueBetween(src, """pangrams"":[", "]")
     response.write "window.answers = [" & answers & "];"   & vbCrLf
     response.write "window.panagrams = [" & panagrams & "];"   & vbCrLf
     response.write "var centerLetter = """ & centerLetter & """;" & vbCrLf
