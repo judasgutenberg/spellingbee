@@ -1,0 +1,72 @@
+<form
+  webc:root="override"
+  id="letter-form"
+  x-data="{ guess: '' }"
+  x-on:submit.prevent="$store.game.submitGuess(guess); guess = '';"
+  autocomplete="off"
+>
+  <guess-input name="guess"></guess-input>
+  <letter-buttons></letter-buttons>
+  <div class="form-buttons">
+    <button
+      class="delete"
+      type="button"
+      x-on:click="guess = guess.slice(0, -1)"
+      aria-hidden
+    >
+      Delete
+    </button>
+    <button
+      class="shuffle"
+      type="button"
+      x-on:click="$store.game.shuffleOuterLetters()"
+      aria-label="Shuffle the outer letters"
+    >
+      <shuffle-icon width="2rem" height="2rem"></shuffle-icon>
+    </button>
+    <button type="submit">Enter</button>
+  </div>
+</form>
+<style webc:scoped>
+  :host {
+    margin-top: 6rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .form-buttons button {
+    font-size: 1rem;
+    transition-property: transform, opacity;
+    transition-duration: 0.2s;
+  }
+
+  .form-buttons button:active {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+
+  .form-buttons button.shuffle {
+    background: none;
+    border: none;
+    padding: 0;
+  }
+
+  .form-buttons button.shuffle svg {
+    fill: var(--black);
+  }
+
+  .form-buttons button.delete,
+  .form-buttons button[type="submit"] {
+    background: none;
+    border: 1px solid var(--black);
+    border-radius: 1rem;
+    padding: 0.3rem 1rem;
+  }
+</style>

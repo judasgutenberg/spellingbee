@@ -1,0 +1,140 @@
+<div webc:root="override">
+  <button x-data="prevGuessModalBtn" x-bind="tmpl">
+    <span x-show="mostRecentGuesses.length === 0">No words guessed yet</span>
+    <template x-for="word in mostRecentGuesses" x-bind:key="word">
+      <span
+        x-text="word + '&nbsp;'"
+        x-data="{show: isInitialRender}"
+        x-show="show"
+        x-init="$nextTick(()=>show=true)"
+        x-transition:enter="enter"
+        x-transition:enter-start="enter-start"
+        x-transition:enter-end="enter-end"
+      ></span>
+    </template>
+  </button>
+  <previous-guess-modal></previous-guess-modal>
+</div>
+<script webc:bucket="alpine">
+  Alpine.data("prevGuessModalBtn", () => ({
+    isInitialRender: true,
+    mostRecentGuesses: [],
+    init() {
+      this.$nextTick(() => {
+        this.isInitialRender = false;
+      });
+
+      this.$watch("$store.game.guessedWords", (guessedWords) => {
+        this.mostRecentGuesses = guessedWords.slice().reverse();
+      });
+    },
+    tmpl: {
+      "@click"() {
+        if (this.$store.game.guessedWords.length) {
+          document.querySelector('[x-data="prevGuessModal"]').showModal();
+        }
+      },
+      ":aria-label"() {
+        return this.$store.game.guessedWords.length > 0
+          ? "Show previous guesses"
+          : null;
+      },
+      ":aria-disabled"() {
+        return this.$store.game.guessedWords.length === 0;
+      },
+      type: "button",
+      class: "prev-guess-modal-btn",
+    },
+  }));
+</script>
+<style webc:scoped>
+  .prev-guess-modal-btn {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 100%;
+    height: 2rem;
+    margin: 1rem 0;
+    padding: 0.5rem 1rem;
+    border-radius: 0.3rem;
+    background-color: var(--gray);
+    border: none;
+    box-shadow: var(--shadow);
+    transition: opacity 0.15s;
+  }
+
+  .prev-guess-modal-btn[aria-disabled="true"] {
+    opacity: 0.6;
+  }
+
+  .prev-guess-modal-btn span {
+    display: inline-block;
+    margin-right: 0.5ch;
+  }
+
+  .prev-guess-modal-btn span.enter {
+    transition: opacity 0.15s, transform 0.15s;
+  }
+
+  .prev-guess-modal-btn span.enter-start {
+    opacity: 0;
+    transform: translateX(10%);
+  }
+
+  .prev-guess-modal-btn span.enter-start:only-of-type {
+    /* If this is the first word, animate up instead of sideways */
+    transform: translateY(20%);
+  }
+
+  .prev-guess-modal-btn span.enter-end {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  dialog h2 {
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  #word-page-wrapper {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    display: flex;
+    flex-flow: row nowrap;
+    gap: 2rem;
+  }
+
+  .page-scroll-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1rem;
+  }
+
+  .page-scroll-buttons button {
+    position: relative;
+    width: 0.8rem;
+    height: 0.8rem;
+    padding: 0;
+    border-radius: 50%;
+    background: var(--gray);
+    border: none;
+    box-shadow: var(--shadow);
+    --page-scroll-pct: 0%;
+  }
+
+  .page-scroll-buttons button::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: var(--yellow);
+    transform: scale(var(--page-scroll-pct));
+    transform-origin: center;
+    transition: transform 0.1s;
+  }
+</style>

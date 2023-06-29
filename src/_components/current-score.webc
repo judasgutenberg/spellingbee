@@ -1,0 +1,207 @@
+<div webc:root="override">
+  <button
+    type="button"
+    x-on:click="$refs.scoremodal.showModal()"
+    class="rank-display"
+  >
+    <div
+      class="current-rank-label"
+      x-text="$store.game.currentRank?.name"
+      x-show="$store.game.currentRank"
+      x-transition.opacity
+    ></div>
+    <div class="progress-bar-wrapper">
+      <progress
+        aria-label="Current score"
+        x-bind:value="$store.game.currentScore"
+        x-bind:max="$store.game.geniusScoreThreshold"
+        x-text="`${$store.game.currentScore} points`"
+      ></progress>
+      <div aria-hidden x-data="currentScoreDot">
+        <span x-text="$store.game.currentScore"></span>
+      </div>
+      <template x-for="rank in $store.game.ranks.slice(1, -1)">
+        <div
+          class="rank-dot"
+          x-bind:class="rank.percent <= $store.game.currentRank?.percent || 0 ? 'filled' : ''"
+          aria-hidden
+          x-bind:style="`left: ${100 * Math.min(1, (rank.percent / 0.7))}%`"
+        ></div>
+      </template>
+    </div>
+  </button>
+  <prev-game-modal-button></prev-game-modal-button>
+  <modal x-ref="scoremodal" id="score-modal">
+    <h2>Rankings</h2>
+    <p>Current score: <span x-text="$store.game.currentScore"></span></p>
+    <template x-if="$store.game.nextRank">
+      <p
+        x-text="`${Math.floor($store.game.nextRank.percent * $store.game.totalPossibleScore) - $store.game.currentScore} points to next rank: ${$store.game.nextRank.name}`"
+      ></p>
+    </template>
+    <template x-if="$store.game.isMaster">
+      <p>You found every word! Great job!</p>
+    </template>
+    <ol>
+      <template
+        x-for="rank in $store.game.ranks.slice(0, $store.game.isMaster ? $store.game.ranks.length : -1)"
+        x-bind:key="rank.name"
+      >
+        <li x-bind:class="rank === $store.game.currentRank ? 'current' : ''">
+          <span x-text="rank.name" class="name"></span>
+          <span
+            x-text="`${Math.floor(rank.percent * $store.game.totalPossibleScore)} points`"
+          ></span>
+        </li>
+      </template>
+    </ol>
+  </modal>
+</div>
+<script webc:bucket="alpine">
+  Alpine.data("currentScoreDot", () => ({
+    init() {
+      this.$watch("$store.game.currentScore", (currentScore) => {
+        const geniusScoreThreshold = this.$store.game.geniusScoreThreshold;
+        this.$el.style.left = `${
+          100 * Math.min(1, currentScore / geniusScoreThreshold)
+        }%`;
+        const width = `${currentScore.toString().length + 1.2}ch`;
+        this.$el.style.width = width;
+        this.$el.style.height = width;
+      });
+    },
+  }));
+</script>
+<style webc:scoped>
+  :host {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .rank-display {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+  }
+
+  .current-rank-label {
+    font-size: 0.8rem;
+    text-align: left;
+    width: 10ch;
+    height: 1.1em;
+  }
+
+  .progress-bar-wrapper {
+    position: relative;
+    height: 0.4rem;
+    flex: 1;
+    margin-left: 1.5ch;
+    /* Offset right side so the right edge of the last progress dot is aligned with the right edge of the header */
+    margin-right: 0.3rem;
+  }
+
+  progress {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    box-shadow: var(--shadow);
+    background: none;
+    border: none;
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+
+  progress::-moz-progress-bar {
+    appearance: none;
+    background-image: var(--gradient);
+    border: none;
+  }
+
+  progress::-webkit-progress-bar {
+    background: none;
+  }
+
+  progress::-webkit-progress-value {
+    appearance: none;
+    background-image: var(--gradient);
+    border: none;
+  }
+
+  [x-data="currentScoreDot"] {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 2.2ch;
+    height: 2.2ch;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: left 0.2s;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: var(--gray);
+    box-shadow: var(--shadow);
+    z-index: 2;
+  }
+
+  [x-data="currentScoreDot"] span {
+    height: 1em;
+    line-height: 1em;
+  }
+
+  .rank-dot {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    height: 0.6rem;
+    width: 0.6rem;
+    background-color: var(--gray);
+    box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+
+  .rank-dot.filled {
+    width: 0.2rem;
+    height: 0.2rem;
+    background-color: papayawhip;
+  }
+
+  #score-modal ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  #score-modal li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    margin: 0 0 0 -0.5rem;
+    border-radius: 1rem;
+    opacity: 0.3;
+  }
+
+  #score-modal li.current,
+  #score-modal li.current ~ li {
+    opacity: 1;
+  }
+
+  #score-modal li.current {
+    background-color: var(--yellow);
+  }
+
+  #score-modal li.current .name {
+    font-weight: bold;
+  }
+</style>

@@ -1,0 +1,88 @@
+---
+meta:
+  title: "Open Spelling Bee"
+  description: "An open-source Spelling Bee game for the web"
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" :content="meta.description" />
+    <meta name="generator" :content="eleventy.generator" />
+    <title @html="meta.title"></title>
+    <link rel="icon" type="image/png" href="/icon32x32.png" />
+
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Pre-connect to the jsdelivr cdn since we'll be loading a few 3rd party libraries from there -->
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+
+    <!-- Critical JS and CSS -->
+    <script @raw="getBundle('js', 'critical')" type="module" webc:keep></script>
+    <script webc:bucket="critical">
+      // navigator.serviceWorker.register("/sw.js");
+      // Ask for persistent storage so it won't be lost when the browser is closed on iOS
+      if (navigator.storage && navigator.storage.persist) {
+        navigator.storage.persist();
+      }
+    </script>
+
+    <style @raw="getBundle('css', 'critical')" webc:keep></style>
+
+    <link rel="stylesheet" href="./styles/reset.css" webc:bucket="critical" />
+
+    <!-- Defer non-critical CSS -->
+    <link
+      rel="preload"
+      :href="getBundleFileUrl('css')"
+      as="style"
+      onload="this.onload=null;this.rel='stylesheet'"
+      webc:keep
+    />
+
+    <!-- AlpineJS -->
+    <script
+      :src="getBundleFileUrl('js', 'alpine')"
+      type="module"
+      webc:keep
+    ></script>
+   
+  </head>
+  <body x-data>
+  <script>
+  
+function getParameterByName(name, url = window.location.href) {
+    name = name.replace(/[\[\]]/g, '\\$&');
+    var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+    return decodeURIComponent(results[2].replace(/\+/g, ' '));
+}
+
+
+
+  var src = getParameterByName("src");
+  if(src && src.length > 0)  {
+
+  } else {
+    document.open();
+    document.write("<div style='font-family:courier'><form method='post' action='handle.asp'>Paste <a target=_new href=view-source:https://www.nytimes.com/puzzles/spelling-bee target=source>source for today's New York Times Spelling Bee</a><br/> here:<br/>");
+        document.write("<textarea name='src'></textarea><br/><input type='submit' value='Play Spelling Bee'/></form></div>");
+    document.close();
+  }
+  </script>
+    <loading-indicator x-show="false"></loading-indicator>
+    <div x-cloak>
+      <page-header></page-header>
+      <page-main></page-main>
+    </div>
+
+    <!-- Non-critical JS -->
+    <script :src="getBundleFileUrl('js')" type="module" webc:keep></script>
+
+    <script src="./js/fireConfetti.mjs"></script>
+  </body>
+</html>

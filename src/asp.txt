@@ -1,0 +1,56 @@
+<%
+ 
+Dim src, wordsArray, centerLetter, outerLetters, answers
+src = Request.Form("src")
+
+
+ 
+ 
+
+
+
+
+
+
+
+
+
+Function GetValueBetween( haystack,  startStr,  endStr)
+    Dim startPos, endPos
+
+    ' Find the starting position of the specified start string
+    startPos = InStr(haystack, startStr)
+    
+    ' If the start string is found
+    If startPos > 0 Then
+        ' Find the ending position of the specified end string
+        endPos = InStr(startPos + Len(startStr), haystack, endStr)
+        
+        ' If the end string is found
+        If endPos > 0 Then
+            ' Extract the value between the start and end strings
+            GetValueBetween = Mid(haystack, startPos + Len(startStr), endPos - startPos - Len(startStr))
+        Else
+            ' Handle the case when the end string is not found
+            GetValueBetween = ""
+        End If
+    Else
+        ' Handle the case when the start string is not found
+        GetValueBetween = ""
+    End If
+End Function
+
+
+If Len(src) > 0 Then
+    centerLetter = GetValueBetween(src, """centerLetter"":""", """")
+    outerLetters = GetValueBetween(src, """outerLetters"":[", "]")
+    answers = GetValueBetween(src, """answers"":[", "]")
+    response.write "window.answers = [" & answers & "];"   & vbCrLf
+    response.write "var centerLetter = """ & centerLetter & """;" & vbCrLf
+    response.write "var outerLetters = [" & outerLetters & "]" & vbCrLf
+    response.write "window.letters = centerLetter +outerLetters.join("""")" + ";"  &  vbCrLf
+ 
+End If
+
+ 
+%>

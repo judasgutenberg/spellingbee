@@ -1,0 +1,49 @@
+:root {
+  --black: #1a1a1a;
+  --gray: #e6e6e6;
+  --yellow: #fdd000;
+  --yellow: oklch(87% 0.2 93);
+  --orange: hsla(33, 100%, 53%, 1);
+  --gradient: linear-gradient(110deg, var(--orange) 0%, var(--yellow) 100%);
+  --shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+}
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  line-height: 1.1;
+  color: #1a1a1a;
+  width: calc(100% - 2rem);
+  margin: 0;
+  padding: 1rem;
+}
+
+.gradient-bg {
+  background-image: var(--gradient);
+  color: white;
+}
+
+canvas.confetti {
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  canvas.confetti {
+    display: none;
+  }
+}
+
+button {
+  appearance: none;
+  -webkit-appearance: none;
+  color: var(--black);
+  touch-action: manipulation;
+  padding: 0;
+}
+
+button[type="submit"] {
+  font-weight: normal;
+}
+
+[x-cloak] {
+  display: none;
+}
