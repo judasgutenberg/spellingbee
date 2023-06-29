@@ -507,13 +507,19 @@ document.addEventListener("alpine:init", () => {
         });
       }
     },
+    wordIsNotPanagram(word){
+       return !getIsWordPanagram(word);
+    }, 
+    wordIsPanagram(word){
+       return getIsWordPanagram(word);
+    }, 
     clearWords() {
       if(confirm("Are you sure you want to clear the words you have successfully guessed?")){
         guessedWordSet.clear();
         this.guessedWords = [];
         guessedWordSet.clear();
         this.updateScore(0);
-        //this.updateDB();
+        this.updateDB();
       }
     },
     shuffleOuterLetters() {

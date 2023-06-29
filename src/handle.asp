@@ -214,7 +214,12 @@ End If
       <template x-for="(page, index) in guessedWordPages" x-bind:key="page.id">
         <ul x-bind:data-idx="index" class="word-page">
           <template x-for="word in page.words" x-bind:key="word">
+ 
             <li x-text="word"></li>
+ 
+ 
+            
+            
           </template>
         </ul>
       </template>
