@@ -1,1 +1,1 @@
-This is a modification of Open Spelling Bee that accepts the sourcecode for the day's New York Times Spelling Bee, parsing out the data to produce an offline version for detached play. This allows you to play without screwing things up for your wife who also plays!
+This is a modification of Open Spelling Bee that accepts the sourcecode for the day's New York Times Spelling Bee, parsing out the data to produce an offline version for detached play. This allows you to play without screwing things up for your spouse who also plays on that same account!
