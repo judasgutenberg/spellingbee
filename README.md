@@ -7,5 +7,5 @@ and then you just click Play Spelling Bee to play. Even if you don't have a New 
 To see a live version of this (using the PHP instead of the ASP backend), go here:
 http://randomsprocket.com/oldspellingbee/
 
-Please note: I absolutely hate this version for multiple reasons.  I chose it because someone had built it, and I wanted to extend what was built.  But it uses some esoteric Javascript framework that requires compilation, and the resulting code doesn't even run on old Chromebooks (which I use).  So I wrote a simpler version from scratch using no frameworks and it fits into only 12k of code and will run on your Commodore 64 I think.  Check that out here:  https://github.com/judasgutenberg/simple_spelling_bee
+Please note: I absolutely hate this version for multiple reasons.  I chose it because someone had built it, and I wanted to extend what was built.  But it uses some esoteric Javascript framework that requires compilation, and the resulting code doesn't even run on old Chromebooks (which I use).  I also found it impossible to implement keyboard shortcuts (and lord knows I tried).  So I wrote a simpler version from scratch using no frameworks, just straightforward, easy-to-read vanilla Javascript. It fits into only 12k of code and will run on your Commodore 64 I think.  Check that out here:  https://github.com/judasgutenberg/simple_spelling_bee
 
